@@ -1,34 +1,17 @@
-const express =    require("express"),
-      app =        express(),
+const express    = require("express"),
+      app        = express(),
       bodyParser = require("body-parser"),
-      mongoose =   require("mongoose");
+      mongoose   = require("mongoose"),
+      Campground = require("./models/campground"),
+      Comment    = require("./models/comment"),
+      seedDB     = require("./seeds");
 
 mongoose.connect('mongodb://localhost:27017/yelp_camp', { useNewUrlParser: true });
+mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-
-// SCHEMA SETUP
-const campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-const Campground = mongoose.model("Campground", campgroundSchema);
-
-//Campground.create({
-//    name: "Sierra Cazorla",
-//    image: "https://images.unsplash.com/photo-1504591504549-8ce1589ea6f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
-//    description: "A wonderful hill of stone and pines"
-//}, (err, campground) => {
-//    if(err){
-//        console.log(err);
-//    } else {
-//        console.log("NEWLY CREATED");
-//        console.log(campground);
-//    }
-//});
-
+app.use(express.static(`${__dirname}/public`));
+//seedDB();
 
 //let campgrounds = [
 //        {name: "Black Mountain", image: "https://images.unsplash.com/photo-1479741044197-d28c298f8c77?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"},
@@ -46,7 +29,7 @@ app.get("/campgrounds", (req, res) => {
         if(err){
             console.log(err);
         } else {
-            res.render("index", {campgrounds: allCampgrounds});
+            res.render("campgrounds/index", {campgrounds: allCampgrounds});
         }
     });
     
@@ -70,21 +53,56 @@ app.post("/campgrounds", (req, res) => {
 });
 // NEW
 app.get("/campgrounds/new", (req, res) => {
-    res.render("new");
+    res.render("campgrounds/new");
 });
 
 // SHOW
 app.get("/campgrounds/:id", (req, res) => {
     // find the campground with provided id
-    Campground.findById(req.params.id, (err, foundcampground) => {
+    Campground.findById(req.params.id).populate("comments").exec((err, foundcampground) => {
        if(err){
            console.log(err);
        } else {
+           //console.log(foundcampground);
            // render the show template of that campground
-           res.render("show", {campground: foundcampground});
+           res.render("campgrounds/show", {campground: foundcampground});
        }
     });
-        
+});
+
+//=====================================
+//      COMMENTS ROUTES
+//=====================================
+
+app.get("/campgrounds/:id/comments/new", (req, res) => {
+    Campground.findById(req.params.id, (err, campground) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render("comments/new", {campground: campground});
+        }
+    });
+});
+
+app.post("/campgrounds/:id/comments", (req, res) => {
+    //  look up campground using Id
+    Campground.findById(req.params.id, (err, campground) => {
+        if(err){
+            console.log(err);
+        } else {
+            //  create new comment
+            Comment.create(req.body.comment, (err, comment) => {
+                if(err){
+                    console.log(err);
+                } else {
+                    // connect new comment to the campground
+                    campground.comments.push(comment);
+                    campground.save();
+                    res.redirect(`/campgrounds/${campground._id}`);
+                }
+            });
+        }
+    });
 });
 
 app.listen(process.env.PORT, process.env.IP, () => {
