@@ -23,36 +23,36 @@ const data = [
 const seedDB = () => {
     //  remove all campgrounds
     Campground.remove({}, err => {
-        if(err){
-            console.log(err);
-        } else {
-            console.log("remove all!!");
-            //  add a few camprounds
-            data.forEach(seed => {
-                Campground.create(seed, (err, createdCampground) => {
-                    if(err){
-                        console.log(err);
-                    } else {
-                        console.log("added!!");
-                        //  add a comment
-                        Comment.create(
-                            {
-                                text: "This place is great, but I wish there was internet",
-                                author: "Homer"
-                            }, (err, comment) => {
-                                if(err){
-                                    console.log(err);
-                                } else {
-                                    createdCampground.comments.push(comment);
-                                    createdCampground.save();
-                                    console.log("created new comment");
-                                }
-                            }
-                        );
-                    }
-                });
-            });
-        }
+        // if(err){
+        //     console.log(err);
+        // } else {
+        //     console.log("remove all!!");
+        //     //  add a few camprounds
+        //     data.forEach(seed => {
+        //         Campground.create(seed, (err, createdCampground) => {
+        //             if(err){
+        //                 console.log(err);
+        //             } else {
+        //                 console.log("added!!");
+        //                 //  add a comment
+        //                 Comment.create(
+        //                     {
+        //                         text: "This place is great, but I wish there was internet",
+        //                         author: "Homer"
+        //                     }, (err, comment) => {
+        //                         if(err){
+        //                             console.log(err);
+        //                         } else {
+        //                             createdCampground.comments.push(comment);
+        //                             createdCampground.save();
+        //                             console.log("created new comment");
+        //                         }
+        //                     }
+        //                 );
+        //             }
+        //         });
+        //     });
+        // }
     });
 };
  
