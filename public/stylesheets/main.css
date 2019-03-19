@@ -2,6 +2,11 @@
     width: 100%;
 }
 
+.delete-form {
+    display: inline;
+}
+
 #show-image {
     padding: 0;
 }
+

@@ -1,6 +1,7 @@
-const express = require("express"),
-      router  = express.Router(),
-      Campground = require("../models/campground");
+const express    = require("express"),
+      router     = express.Router(),
+      Campground = require("../models/campground"),
+      Comment    = require("../models/comment");
 
 //middleware to check if log in
 const isLoggedIn = (req, res, next) => {
@@ -8,6 +9,23 @@ const isLoggedIn = (req, res, next) => {
         return next();
     }
     res.redirect("/login");
+};
+
+//middleware to check if you own the camp
+const checkCampgroundOwnership = (req, res, next) => {
+    if(req.isAuthenticated()){
+        Campground.findById(req.params.id, (err, foundcampground) => {
+            if(err){
+                res.redirect("back");
+            } else if(foundcampground.author.id.equals(req.user._id)){
+               next();
+            } else {
+                res.redirect("back");
+            }
+        });
+    } else {
+        res.redirect("back");
+    }
 };
 
 // INDEX
@@ -62,5 +80,42 @@ router.get("/:id", (req, res) => {
        }
     });
 });
+
+//EDIT CAMPGROUND
+router.get("/:id/edit", checkCampgroundOwnership, (req, res) => {
+    Campground.findById(req.params.id, (err, foundcampground) => {
+        res.render("campgrounds/edit", {campground: foundcampground});
+    });
+});
+
+//UPDATE CAMPGROUND
+router.put("/:id", checkCampgroundOwnership, (req, res) => {
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
+        if(err){
+            res.redirect("/campgrounds");
+        } else {
+            res.redirect(`/campgrounds/${req.params.id}`);
+        }
+    });
+});
+
+//DESTROY CAMPGROUND
+router.delete("/:id", checkCampgroundOwnership, (req, res) => {
+    Campground.findByIdAndRemove(req.params.id, (err, campground) => {
+        if(err){
+            res.redirect("/campgrounds");
+        } else {
+            Comment.deleteMany({_id: { $in: campground.comments }}, err => {
+                if(err){
+                    console.log(err);
+                    res.redirect("/campgrounds");
+                } else {
+                    res.redirect("/campgrounds");
+                }
+            });
+        }
+    });
+});
+
 
 module.exports = router;

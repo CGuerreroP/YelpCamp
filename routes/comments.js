@@ -10,6 +10,25 @@ const isLoggedIn = (req, res, next) => {
     }
     res.redirect("/login");
 };
+
+//middleware to check if you own the comment
+const checkCommentOwnership = (req, res, next) => {
+    if(req.isAuthenticated()){
+        Comment.findById(req.params.comment_id, (err, foundcomment) => {
+            if(err){
+                res.redirect("back");
+                //does user own the comment?
+            } else if(foundcomment.author.id.equals(req.user._id)){
+               next();
+            } else {
+                res.redirect("back");
+            }
+        });
+    } else {
+        res.redirect("back");
+    }
+};
+
 //Comments New
 router.get("/new", isLoggedIn, (req, res) => {
     Campground.findById(req.params.id, (err, campground) => {
@@ -20,7 +39,7 @@ router.get("/new", isLoggedIn, (req, res) => {
         }
     });
 });
-//Comments Cretate
+//Comments Create
 router.post("/", isLoggedIn, (req, res) => {
     //  look up campground using Id
     Campground.findById(req.params.id, (err, campground) => {
@@ -42,6 +61,40 @@ router.post("/", isLoggedIn, (req, res) => {
                     res.redirect(`/campgrounds/${campground._id}`);
                 }
             });
+        }
+    });
+});
+
+//Comments Edit
+router.get("/:comment_id/edit", checkCommentOwnership, (req, res) => {
+    Comment.findById(req.params.comment_id, (err, foundComment) => {
+        if(err){
+            res.redirect("back");
+        } else {
+            res.render("comments/edit", {campground_id: req.params.id, comment: foundComment});
+        }
+    });
+    
+});
+
+//Comments Update
+router.put("/:comment_id", checkCommentOwnership, (req, res) => {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, comment) => {
+        if(err){
+            res.redirect("back");
+        } else {
+            res. redirect(`/campgrounds/${req.params.id}`);
+        }
+    });
+});
+
+//Delete Comments
+router.delete("/:comment_id", checkCommentOwnership, (req, res) => {
+    Comment.findByIdAndRemove(req.params.comment_id, (err, foundComment) => {
+        if(err){
+            res.redirect(`/campgrounds/${req.params.id}`);
+        } else {
+            res.redirect(`/campgrounds/${req.params.id}`);
         }
     });
 });
