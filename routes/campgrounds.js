@@ -5,7 +5,7 @@ const express    = require("express"),
       middleware = require("../middleware");
 
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const geocodingClient = mbxGeocoding({ accessToken: "pk.eyJ1IjoiY3Jpc2dwZGV2IiwiYSI6ImNqdGg2YmV6ZDByN2k0MGxoeWF5NWZjejYifQ.-5CuIIhzNWus2LIeX2FUyQ" });
+const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
 // INDEX
 router.get("/", (req, res) => {
