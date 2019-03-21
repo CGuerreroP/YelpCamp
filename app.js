@@ -17,7 +17,7 @@ const indexRoutes       = require("./routes/index.js"),
       commentsRoutes    = require("./routes/comments"),
       campgroundsRoutes = require("./routes/campgrounds");
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });      
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });   
 mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
