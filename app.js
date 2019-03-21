@@ -16,8 +16,8 @@ const express               = require("express"),
 const indexRoutes       = require("./routes/index.js"),
       commentsRoutes    = require("./routes/comments"),
       campgroundsRoutes = require("./routes/campgrounds");
-      
-mongoose.connect('mongodb://localhost:27017/yelp_camp_mapbox', { useNewUrlParser: true });
+
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });      
 mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
