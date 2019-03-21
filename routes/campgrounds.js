@@ -1,8 +1,12 @@
+require('dotenv').config();
 const express    = require("express"),
       router     = express.Router(),
       Campground = require("../models/campground"),
       Comment    = require("../models/comment"),
       middleware = require("../middleware");
+
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
 // INDEX
 router.get("/", (req, res) => {
@@ -11,7 +15,7 @@ router.get("/", (req, res) => {
         if(err){
             console.log(err);
         } else {
-            res.render("campgrounds/index", {campgrounds: allCampgrounds});
+            res.render("campgrounds/index", {campgrounds: allCampgrounds, page: "campgrounds"});
         }
     });
     
@@ -19,26 +23,30 @@ router.get("/", (req, res) => {
 // CREATE
 router.post("/", middleware.isLoggedIn, (req, res) => {
     // get data from a form and add it to campgrounds array
-    const newName = req.body.name;
-    const newImage = req.body.image;
-    const newDescription = req.body.description;
-    const author = {
+    req.body.campground.author = {
         id: req.user._id,
         username: req.user.username
     };
-    const newCamp = {name: newName, image: newImage, description: newDescription, author: author};
-    // create a new Campground and save to DB
-    Campground.create(newCamp, (error, campground) => {
-        if(error){
-            req.flash("error", "Something went wrong");
-            res.redirect("/campgrounds");
-        } else {
-            //console.log(campground);
-            req.flash("success", "New Campground added");
-            // redirect to campgrounds page
-            res.redirect("/campgrounds");
-        }
-    });
+    geocodingClient.forwardGeocode({
+            query: req.body.campground.location,
+            limit: 1
+        })
+            .send()
+            .then(response => {
+                req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
+                    // create a new Campground and save to DB
+                Campground.create(req.body.campground, (error, campground) => {
+                    if(error){
+                        req.flash("error", "Something went wrong");
+                        res.redirect("/campgrounds");
+                    } else {
+                        //console.log(campground.coordinates);
+                        req.flash("success", "New Campground added");
+                        // redirect to campgrounds page
+                        res.redirect("/campgrounds");
+                    }
+                });
+            });
 });
 // NEW
 router.get("/new", middleware.isLoggedIn, (req, res) => {
@@ -73,15 +81,23 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
 
 //UPDATE CAMPGROUND
 router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
-    Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
-        if(err){
-            req.flash("error", "Something went wrong");
-            res.redirect("/campgrounds");
-        } else {
-            req.flash("success", "Campground updated");
-            res.redirect(`/campgrounds/${req.params.id}`);
-        }
-    });
+    geocodingClient.forwardGeocode({
+            query: req.body.campground.location,
+            limit: 1
+        })
+            .send()
+            .then(response => {
+                req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
+                Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
+                    if(err){
+                        req.flash("error", "Something went wrong");
+                        res.redirect("/campgrounds");
+                    } else {
+                        req.flash("success", "Campground updated");
+                        res.redirect(`/campgrounds/${req.params.id}`);
+                    }
+                });
+            });
 });
 
 //DESTROY CAMPGROUND

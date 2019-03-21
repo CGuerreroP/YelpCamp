@@ -15,10 +15,12 @@ body {
 
 .btn {
     border-radius: 50px;
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 1em;
 }
 
 .btn-default {
-    background-color: rgba(255, 255, 255, 0.5);
+    
 }
 
 .slideshow {

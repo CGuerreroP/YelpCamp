@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express               = require("express"),
       app                   = express(),
       bodyParser            = require("body-parser"),
@@ -17,13 +19,14 @@ const indexRoutes       = require("./routes/index.js"),
       commentsRoutes    = require("./routes/comments"),
       campgroundsRoutes = require("./routes/campgrounds");
       
-mongoose.connect('mongodb://localhost:27017/yelp_camp', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/yelp_camp_mapbox', { useNewUrlParser: true });
 mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(`${__dirname}/public`));
 app.use(methodOverride("_method"));
 app.use(flash()); //antes de passport configuration
+app.locals.moment = require('moment');
 //seedDB();
 
 //  PASSPORT CONFIGURATION
