@@ -1,7 +1,8 @@
 const express = require("express"),
       router  = express.Router(),
       passport = require("passport"),
-      User     = require("../models/user.js");
+      User     = require("../models/user.js"),
+      middleware = require("../middleware");
 
 //root Route
 router.get("/", (req, res) => {
@@ -9,12 +10,16 @@ router.get("/", (req, res) => {
 });
 
 //show register form
-router.get("/register", (req, res) => {
+router.get("/register", middleware.checkIfSearch, (req, res) => {
     res.render("register", {page: "register"});
 });
+
 //handle sign up logic
 router.post("/register", (req, res) => {
     const newUser = new User({username: req.body.username});
+    if(req.body.adminCode === process.env.ADMIN) {
+        newUser.isAdmin = true;
+    }
     User.register(newUser, req.body.password, (err, user) =>{
         if(err){
             req.flash("error", err.message); //this error comes thans to passport
@@ -28,7 +33,7 @@ router.post("/register", (req, res) => {
 });
 
 //show login form
-router.get("/login", (req, res) => {
+router.get("/login", middleware.checkIfSearch, (req, res) => {
     res.render("login", {page: "login"});
 });
 

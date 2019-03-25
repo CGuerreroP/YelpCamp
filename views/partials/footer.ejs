@@ -1,9 +1,20 @@
         </div>  <!--container-->
         
+         <script type='text/javascript'>
+            const textinput = document.getElementById('input-search');
+                 textinput.addEventListener('keypress', event => {
+                    if (inputLength() > 0 && event.keyCode === 13){
+                        document.forms['search'].submit();
+                    }
+                });
+            
+        </script>
+        
         <!-- jQuery CDN -->
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
         
         <!-- Bootstrap JS CDN -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
     </body>
 </html>

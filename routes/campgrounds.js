@@ -8,7 +8,7 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
 // INDEX
-router.get("/", (req, res) => {
+router.get("/", middleware.checkIfSearch, (req, res) => {
     // get all campgrounds from DB
     Campground.find({}, (err, allCampgrounds) => {
         if(err){
@@ -17,8 +17,8 @@ router.get("/", (req, res) => {
             res.render("campgrounds/index", {campgrounds: allCampgrounds, page: "campgrounds"});
         }
     });
-    
 });
+
 // CREATE
 router.post("/", middleware.isLoggedIn, (req, res) => {
     // get data from a form and add it to campgrounds array
@@ -48,12 +48,12 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
             });
 });
 // NEW
-router.get("/new", middleware.isLoggedIn, (req, res) => {
+router.get("/new", [middleware.isLoggedIn, middleware.checkIfSearch], (req, res) => {
     res.render("campgrounds/new");
 });
 
 // SHOW
-router.get("/:id", (req, res) => {
+router.get("/:id", middleware.checkIfSearch, (req, res) => {
     // find the campground with provided id
     Campground.findById(req.params.id).populate("comments").exec((err, foundcampground) => {
        if(err || !foundcampground){
@@ -68,7 +68,7 @@ router.get("/:id", (req, res) => {
 });
 
 //EDIT CAMPGROUND
-router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
+router.get("/:id/edit", [middleware.checkCampgroundOwnership, middleware.checkIfSearch], (req, res) => {
     Campground.findById(req.params.id, (err, foundcampground) => {
         if(err){
             req.flash("error", "Campground not found");

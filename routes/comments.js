@@ -5,7 +5,7 @@ const express    = require("express"),
       middleware = require("../middleware");
 
 //Comments New
-router.get("/new", middleware.isLoggedIn, (req, res) => {
+router.get("/new", [middleware.isLoggedIn, middleware.checkIfSearch], (req, res) => {
     Campground.findById(req.params.id, (err, campground) => {
         if(err || !campground){
             console.log(err);
@@ -43,7 +43,7 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
 });
 
 //Comments Edit
-router.get("/:comment_id/edit", middleware.checkCommentOwnership, (req, res) => {
+router.get("/:comment_id/edit", [middleware.checkCommentOwnership, middleware.checkIfSearch], (req, res) => {
     Campground.findById(req.params.id, (err, foundcampground) => {
         if(err || !foundcampground){
             req.flash("error", "Campground not found");

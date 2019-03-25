@@ -42,3 +42,36 @@
   flex-wrap: wrap;
 }
 
+@media (min-width: 768px){
+  #left {
+  width: 60%;
+  }
+  
+  #search-form-li {
+    width: 60%;
+  }
+  
+  #search {
+    width: 100%;
+  }
+  
+  #input-search {
+    width: 100%;
+    border-radius: 30px;
+  }
+}
+
+#input-search {
+    border-radius: 30px;
+}
+
+#input-search:focus {
+    border-radius: 30px;
+}
+  
+@media (max-width: 768px){
+  #search-form {
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
