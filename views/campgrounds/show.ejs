@@ -16,7 +16,7 @@
                     <h4 class="pull-right">$<%= campground.price %>/night</h4>
                     <h4><a><%= campground.name %></a></h4>
                     <p><%= campground.description %></p>
-                    <p><em>Submitted by: <%= campground.author.username %>, <%= moment(campground.createdAt).fromNow() %></p></em>
+                    <p><em>Submitted by: <a href="/users/<%= campground.author.id %>"><%= campground.author.username %></a>, <%= moment(campground.createdAt).fromNow() %></p></em>
                     <% if(currentUser && campground.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
                         <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
                         <form class="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
@@ -33,8 +33,8 @@
                 <% campground.comments.forEach(comment => { %>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong><%= comment.author.username %></strong>
-                            <span class="pull-right"><%= moment(campground.createdAt).fromNow() %></span>
+                            <a href="/users/<%= comment.author.id %>"><strong><%= comment.author.username %></strong></a>
+                            <span class="pull-right"><em><%= moment(comment.createdAt).fromNow() %></em></span>
                             <p><%= comment.text %></p>
                             <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
                                 <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit" class="btn btn-xs btn-warning">Edit</a>

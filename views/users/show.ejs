@@ -1,0 +1,42 @@
+<% include ../partials/header %>
+<div class="row">
+    <div class="col-md-4">
+        <h1><%= `${user.firstName} ${user.lastName}` %></h1>
+        <div class="thumbnail">
+            <img src="<%= user.avatar %>" alt="user profile image">
+            <div class="caption">
+                <a href="mailto: <%= user.email %>"><%= user.email %></a>
+                <hr>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h3><%= user.username %>'s Campgrounds</h3>
+            <div class="row flex text-center">
+                <% campgrounds.forEach(campground => { %>
+                    <div class="col-lg-3 col-md-4 col-sm-4">
+                        <a href="/campgrounds/<%= campground._id %>" class="thumbnail">
+                            <img src="<%= campground.image %>">
+                            <div class="caption">
+                                <h5><%= campground.name %></h5>
+                            </div>
+                        </a>
+                    </div>
+                <% }); %>
+            </div>
+        <h3><%= user.username %>'s Comments</h3>
+        <div class="well">
+            <% comments.forEach(comment => { %>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="/campgrounds/<%= comment.campground.id %>"><strong><%= comment.campground.name %></strong></a>
+                        <span class="pull-right"><em><%= moment(comment.createdAt).fromNow() %></em></span>
+                        <p><%= comment.text %></p>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer %>

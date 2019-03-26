@@ -1,7 +1,9 @@
-const express = require("express"),
-      router  = express.Router(),
-      passport = require("passport"),
-      User     = require("../models/user.js"),
+const express    = require("express"),
+      router     = express.Router(),
+      passport   = require("passport"),
+      User       = require("../models/user"),
+      Campground = require("../models/campground"),
+      Comment    = require("../models/comment"),
       middleware = require("../middleware");
 
 //root Route
@@ -16,7 +18,14 @@ router.get("/register", middleware.checkIfSearch, (req, res) => {
 
 //handle sign up logic
 router.post("/register", (req, res) => {
-    const newUser = new User({username: req.body.username});
+    const newUser = new User({
+        username: req.body.username, 
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        avatar: req.body.avatar
+    });
+    //if(req.body.username === 'admin') {newUser.isAdmin = true };
     if(req.body.adminCode === process.env.ADMIN) {
         newUser.isAdmin = true;
     }
@@ -50,6 +59,32 @@ router.get("/logout", (req, res) => {
     req.logout();
     req.flash("success", "Logged you out");
     res.redirect("/campgrounds");
+});
+
+// USER PROFILE
+router.get("/users/:id", (req, res) => {
+    User.findById(req.params.id, (error, foundUser) => {
+       if(error){
+           req.flash("error", "Something went wrong");
+           res.redirect("/campgrounds");
+       } else {
+           Campground.find().where("author.id").equals(foundUser._id).exec((error, campgrounds) => {
+               if(error){
+                   req.flash("error", "Something went wrong");
+                   res.redirect("/campgrounds");
+               } else {
+                   Comment.find().where("author.id").equals(foundUser._id).exec((error, comments) => {
+                       if(error){
+                           req.flash("error", "Something went wrong");
+                           res.redirect("/campgrounds");
+                       } else {
+                           res.render("users/show", {user: foundUser, campgrounds: campgrounds, comments: comments});
+                       }
+                   });
+               }
+           });
+       }
+    });
 });
 
 module.exports = router;

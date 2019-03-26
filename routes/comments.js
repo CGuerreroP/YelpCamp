@@ -27,6 +27,9 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
                 if(err){
                     req.flash("error", "Something went wrong");
                 } else {
+                    //connect campground to the comment
+                    comment.campground.id = campground._id;
+                    comment.campground.name = campground.name;
                     //connect user to the comment adding username and id to the comment
                     comment.author.id = req.user._id;
                     comment.author.username = req.user.username;
