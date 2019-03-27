@@ -3,19 +3,15 @@ const mongoose              = require("mongoose"),
       
 // SCHEMA SETUP
 const userSchema = new mongoose.Schema({
-    username: String,
+    username: { type: String, unique: true, required: true },
     password: String,
     firstName: String,
     lastName: String,
     avatar: String,
-    email: String,
-    isAdmin: {type: Boolean, default: false}
-    // comments : [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "Comment"
-    //     }
-    // ]
+    email: { type: String, unique: true, required: true },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    isAdmin: { type: Boolean, default: false }
 });
 
 userSchema.plugin(passportLocalMongoose);
