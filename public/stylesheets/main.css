@@ -1,18 +1,19 @@
+/* Thumbnail showpage styles */
 .thumbnail img {
     width: 100%;
 }
 
+#show-image {
+    padding: 0;
+}
+
+/* Campground show page delete button */
 .delete-form {
     display: inline;
 }
 
-#show-image {
-    padding: 0;
-
-}
-
 /* ===================================*/
-/*          MAP                       */
+/*          CUSTOM MAP                */
 /* ===================================*/
 #map {
     width: 100%;
@@ -41,16 +42,17 @@
 }
 
 /* ===================================*/
-/*          CAMPS DISPLAY               */
+/*          CAMPS GRID DISPLAY        */
 /* ===================================*/
 
+/*Flexbox grid fix*/
 .flex {
   display: flex;
   flex-wrap: wrap;
 }
 
 /* ===================================*/
-/*          SEARCH BAR                */
+/*          CUSTOM SEARCH BAR         */
 /* ===================================*/
 @media (min-width: 768px){
   #left {
@@ -134,18 +136,26 @@
 }
 
 /* ===================================*/
-/*          FOOTER                    */
+/*          STICKY FOOTER             */
 /* ===================================*/
 
-/*footer {*/
-/*  height: 45px;*/
-/*  background-color: #eee;*/
-/*}*/
-/*.footer-list {*/
-/*  list-style: none;*/
-/*}*/
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
 
-/*.footer-list li  {*/
-/*  margin-left: 10px;*/
-/*  float: left;*/
-/*}*/
+.container .text-muted {
+  margin: 20px 0;
+}

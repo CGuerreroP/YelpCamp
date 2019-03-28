@@ -1,9 +1,36 @@
+require('dotenv').config();
+
 const express    = require("express"),
       router     = express.Router(),
       Campground = require("../models/campground"),
       Comment    = require("../models/comment"),
-      middleware = require("../middleware");
+      middleware = require("../middleware"),
+      multer     = require("multer"),
+      cloudinary = require("cloudinary");
 
+// MULTER CONFIG
+let storage = multer.diskStorage({
+  filename: (req, file, callback) => {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+let imageFilter = (req, file, cb) => {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+let upload = multer({ storage: storage, fileFilter: imageFilter});
+
+// CLOUDINARY CONFIG
+cloudinary.config({ 
+  cloud_name: 'crisgpdev', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// MAPBOX CONFIG
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
@@ -20,12 +47,7 @@ router.get("/", middleware.checkIfSearch, (req, res) => {
 });
 
 // CREATE
-router.post("/", middleware.isLoggedIn, (req, res) => {
-    // get data from a form and add it to campgrounds array
-    req.body.campground.author = {
-        id: req.user._id,
-        username: req.user.username
-    };
+router.post("/", middleware.isLoggedIn, upload.single('image'), (req, res) => {
     geocodingClient.forwardGeocode({
             query: req.body.campground.location,
             limit: 1
@@ -33,17 +55,31 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
             .send()
             .then(response => {
                 req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
+                cloudinary.v2.uploader.upload(req.file.path, (err, result) => {
+                    if(err) {
+                        req.flash('error', err.message);
+                        return res.redirect('back');
+                    }
+                    // add cloudinary url for the image to the campground object under image property
+                    req.body.campground.image = result.secure_url;
+                    // add image's public_id to campground object
+                    req.body.campground.imageId = result.public_id;
+                    // add author to campground
+                    req.body.campground.author = {
+                        id: req.user._id,
+                        username: req.user.username
+                    };
                     // create a new Campground and save to DB
-                Campground.create(req.body.campground, (error, campground) => {
-                    if(error){
-                        req.flash("error", "Something went wrong");
-                        res.redirect("/campgrounds");
-                    } else {
+                    Campground.create(req.body.campground, (error, campground) => {
+                        if(error){
+                            req.flash("error", error.message);
+                            return res.redirect("back");
+                        }
                         //console.log(campground.coordinates);
                         req.flash("success", "New Campground added");
                         // redirect to campgrounds page
-                        res.redirect("/campgrounds");
-                    }
+                        res.redirect(`/campgrounds/${campground._id}`);
+                    });
                 });
             });
 });
@@ -79,24 +115,53 @@ router.get("/:id/edit", [middleware.checkCampgroundOwnership, middleware.checkIf
 });
 
 //UPDATE CAMPGROUND
-router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
-    geocodingClient.forwardGeocode({
+router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), async (req, res) => {
+    Campground.findById(req.params.id, async (err, campground) => {
+        if(err){
+            req.flash("error", err.message);
+            return res.redirect("/campgrounds/" + campground._id);
+        }
+        //if a new file has been upload
+        if(req.file){
+            try {
+                await cloudinary.v2.uploader.destroy(campground.imageId);
+                let result = await cloudinary.v2.uploader.upload(req.file.path);
+                campground.imageId = result.public_id;
+                campground.image = result.secure_url;
+            } catch(err) {
+                req.flash("error", err.message);
+                return res.redirect("/campgrounds/" + campground._id);
+            }
+            
+                if(err){
+                    req.flash("error", "Something went wrong");
+                    return res.redirect("/campgrounds/" + campground._id);
+                }
+                
+                    if(err){
+                        req.flash('error', err.message);
+                        return res.redirect('back');
+                    }
+                    
+                
+            
+        }
+        campground.name = req.body.campground.name;
+        campground.price = req.body.campground.price;
+        campground.description = req.body.campground.description;
+        campground.location = req.body.campground.location;
+        geocodingClient.forwardGeocode({
             query: req.body.campground.location,
             limit: 1
         })
             .send()
             .then(response => {
-                req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
-                Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
-                    if(err){
-                        req.flash("error", "Something went wrong");
-                        res.redirect("/campgrounds");
-                    } else {
-                        req.flash("success", "Campground updated");
-                        res.redirect(`/campgrounds/${req.params.id}`);
-                    }
-                });
+                campground.coordinates = response.body.features[0].geometry.coordinates;
             });
+        campground.save();
+        req.flash("success", "Campground updated");
+        res.redirect(`/campgrounds/${req.params.id}`);
+    });
 });
 
 //DESTROY CAMPGROUND
