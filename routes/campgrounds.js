@@ -54,11 +54,13 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), async (req, res)
             limit: 1
         }).send();
         req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
-        let result = await cloudinary.v2.uploader.upload(req.file.path);
-        // add cloudinary url for the image to the campground object under image property
-        req.body.campground.image = result.secure_url;
-        // add image's public_id to campground object
-        req.body.campground.imageId = result.public_id;
+        if(req.file) {
+            let result = await cloudinary.v2.uploader.upload(req.file.path);
+            // add cloudinary url for the image to the campground object under image property
+            req.body.campground.image = result.secure_url;
+            // add image's public_id to campground object
+            req.body.campground.imageId = result.public_id;
+        }
         // add author to campground
         req.body.campground.author = {
             id: req.user._id,
@@ -126,6 +128,11 @@ router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), 
                 return res.redirect("/campgrounds/" + campground._id);
             }
         }
+        if(req.body.campground.image){
+            campground.image = req.body.campground.image;
+            await cloudinary.v2.uploader.destroy(campground.imageId);
+            campground.imageId = "";
+        }
         campground.name = req.body.campground.name;
         campground.price = req.body.campground.price;
         campground.description = req.body.campground.description;
@@ -150,7 +157,9 @@ router.delete("/:id", middleware.checkCampgroundOwnership, (req, res) => {
             return res.redirect("/campgrounds");
         }
         try {
-            await cloudinary.v2.uploader.destroy(campground.imageId);
+            if(campground.imageId){
+                await cloudinary.v2.uploader.destroy(campground.imageId);
+            }
             await Comment.deleteMany({_id: { $in: campground.comments }});
             req.flash("success", "Campground deleted");
             res.redirect("/campgrounds");

@@ -1,40 +1,51 @@
 <% include ../partials/header %>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 mb-4">
         <h1><%= `${user.firstName} ${user.lastName}` %></h1>
-        <div class="thumbnail">
-            <img src="<%= user.avatar %>" alt="user profile image">
-            <div class="caption">
-                <a href="mailto: <%= user.email %>"><%= user.email %></a>
+        <div class="card">
+            <img class="card-img-top" src="<%= user.avatar %>" alt="user profile image">
+            <div class="card-body">
+                <a class="card-link" href="mailto: <%= user.email %>"><%= user.email %></a>
                 <hr>
-                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
+                <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
             </div>
         </div>
     </div>
-    <div class="col-md-8">
-        <h3><%= user.username %>'s Campgrounds</h3>
-            <div class="row flex text-center">
-                <% campgrounds.forEach(campground => { %>
-                    <div id="row-margin" class="col-lg-3 col-md-4 col-sm-4">
-                        <div class="foto">
-                            <a href="/campgrounds/<%= campground._id %>">
-                                <img class="img-rounded" width="100%" src="<%= campground.image %>">
-                                <div class="absolute">
-                                    <h5><%= campground.name %></h5>
-                                </div>
-                            </a>
+    
+    <div class="col-md-8 mb-4">
+        <div class="card card-body bg-light">
+            <h3><%= user.username %>'s Campgrounds</h3>
+            <hr>
+                <div class="row flex text-center">
+                    <% campgrounds.forEach(campground => { %>
+                        <div id="row-margin" class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                            <div class="foto">
+                                <a href="/campgrounds/<%= campground._id %>">
+                                    <img class="rounded img-fluid" src="<%= campground.image %>">
+                                    <div class="absolute">
+                                        <h5><%= campground.name %></h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                <% }); %>
-            </div>
-        <h3><%= user.username %>'s Comments</h3>
-        <div class="well">
+                    <% }); %>
+                </div>
+        </div>    
+        <div class="card card-body bg-light my-3">
+            <h3><%= user.username %>'s Comments</h3>
+            <hr>
             <% comments.forEach(comment => { %>
                 <div class="row">
                     <div class="col-md-12">
-                        <a href="/campgrounds/<%= comment.campground.id %>"><strong><%= comment.campground.name %></strong></a>
-                        <span class="pull-right"><em><%= moment(comment.createdAt).fromNow() %></em></span>
-                        <p><%= comment.text %></p>
+                        <a class="text-decoration-none" href="/campgrounds/<%= comment.campground.id %>"><strong><%= comment.campground.name %></strong></a>
+                        <small class="float-right"><em><%= moment(comment.createdAt).fromNow() %></em></small>
+                        <p class="font-weight-light"><%= comment.text %></p>
+                        <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                            <a href="/campgrounds/<%= comment.campground.id %>/comments/<%= comment._id %>/edit" class="btn btn-sm btn-warning mb-3">Edit</a>
+                            <form class="delete-form" action="/campgrounds/<%= comment.campground.id %>/comments/<%= comment._id %>?_method=DELETE" method="post">
+                                <button class="btn btn-sm btn-danger mb-3">Delete</button>
+                            </form>
+                        <% } %>
                     </div>
                 </div>
             <% }); %>

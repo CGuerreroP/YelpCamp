@@ -1,34 +1,42 @@
 <% include ./partials/header %>
-    <div class="row text-center">
-        <h1>Sign Up</h1>
-        <div class="col-md-4 col-md-offset-4">
+    <div class="row text-center justify-content-around">
+        <div class="col-xl-4 col-md-5 col-sm-10">
+            <h1 class=""><i class="fas fa-campground"></i></h1>
+            <h1>Sign Up</h1>
             <form action="/register" method="post">
                 <div class="form-group">
-                    <input class="form-control" type="text" name="username" placeholder="username">
+                    <label for="usernamereg" class="sr-only">Username</label>
+                    <input class="form-control" id="usernamereg" type="text" name="username" placeholder="username">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="password" name="password" placeholder="password">
+                    <label for="passreg" class="sr-only">Password</label>
+                    <input class="form-control" id="passreg" type="password" name="password" placeholder="password">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="firstName" placeholder="First name">
+                    <label for="firstreg" class="sr-only">First name</label>
+                    <input class="form-control" id="firstreg" type="text" name="firstName" placeholder="First name">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="lastName" placeholder="Last name">
+                    <label for="lastreg" class="sr-only">Last name</label>
+                    <input class="form-control" id="lastreg" type="text" name="lastName" placeholder="Last name">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="email" name="email" placeholder="cristina@gmail.com">
+                    <label for="emailreg" class="sr-only">Email address</label>
+                    <input class="form-control" id="emailreg" type="email" name="email" placeholder="cristina@gmail.com">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="avatar" placeholder="avatar url">
+                    <label for="avatarreg" class="sr-only">Avatar url</label>
+                    <input class="form-control" id="avatarreg" type="text" name="avatar" placeholder="avatar url">
                 </div>
                 <div class="form-group">
+                    <label for="adminCode" class="sr-only">Admin code</label>
                     <input class="form-control" type="text" name="adminCode" placeholder="Admin code">
                 </div>
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary btn-block">Sign Up</button>
                 </div>
             </form>
-            <a href="/campgrounds">Go Back</a>
+            <small><a href="/campgrounds">Go Back</a></small>
         </div>
     </div>
 <% include ./partials/footer %>

@@ -1,5 +1,5 @@
 /* Thumbnail showpage styles */
-.thumbnail img {
+.card img {
     width: 100%;
 }
 
@@ -10,6 +10,183 @@
 /* Campground show page delete button */
 .delete-form {
     display: inline;
+}
+
+/* ===================================*/
+/*          INDEX COLUMNS CARDS        */
+/* ===================================*/
+.masonry-brick {
+	display: inline-block;
+	position: relative;
+	z-index: 0;
+	
+}
+
+.overlay {
+	position: absolute;
+	z-index: 1;
+	top: 1em;
+	left: 1em;
+	bottom: 1em;
+	right: 1em;
+}
+
+.hide {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+	border-radius: 0;
+	transition: all 1s ease;
+}
+
+.hoverText {
+  opacity: 0;
+  position: absolute;
+  top: 1em;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 2;
+	transition: all 1s ease;
+}
+
+.hoverText > p {
+  margin-bottom: 0;
+  font-size: 0.8em;
+}
+
+#link {
+  margin-top: 15%;
+}
+
+.hoverText a {
+  color: red;
+  text-decoration: none;
+}
+
+.masonry-brick:hover .hide {
+	opacity: 0.6;
+}
+.masonry-brick:hover .hoverText {
+	opacity: 1;
+}
+
+.masonry-brick:hover .card-img-overlay {
+	/*color: black;*/
+	opacity: 0;
+}
+
+#cardIndex {
+  border-radius: 0;
+  border: 0;
+}
+
+.card-img-overlay {
+  padding: 0;
+  z-index: 2;
+  top: 90%;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: all 0.5s ease;
+}
+
+#title{
+  position: absolute;
+  left: 0.5em;
+  bottom: 0;
+  margin-bottom: 0;
+}
+
+#masonry-img {
+  border-radius: 0;
+}
+
+#masonry-text {
+  
+}
+
+@media (max-width: 768px) {
+  /*html {*/
+  /*  font-size: 0.8rem;*/
+  /*}*/
+	.masonry {
+		columns: 1;
+		column-gap: 1em;
+	}
+	.card-img-overlay {
+	  top: 93%;
+	}
+	.hoverText > p {
+    font-size: 1.2em;
+  }
+  #title{
+    font-size: 1.2em;
+  }
+  #titleHover{
+    font-size: 1.4em;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+	/*html {*/
+ /*   font-size: 1rem;*/
+ /* }*/
+	
+	.masonry {
+		columns: 2;
+		column-gap: 0.4em;
+	}
+	.card-img-overlay {
+	  top: 91%;
+	}
+	.hoverText > p {
+    font-size: 1em;
+  }
+  #title{
+    font-size: 1.2em;
+  }
+  #titleHover{
+    font-size: 1.2em;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  /*html {*/
+  /*  font-size: 1.2rem;*/
+  /*}*/
+	.masonry {
+		columns: 3;
+		column-gap: 0.4em;
+	}
+	.hoverText > p {
+    font-size: 1em;
+  }
+  #title{
+    font-size: 1.2em;
+  }
+  #titleHover{
+    font-size: 1.2em;
+  }
+
+}
+@media (min-width: 1200px) {
+  /*html {*/
+  /*  font-size: 1.4rem;*/
+  /*}*/
+	.masonry {
+		columns: 4;
+		column-gap: 0.4em;
+	}
+	.hoverText > p {
+    font-size: 0.9em;
+  }
+  #title{
+    font-size: 1.1em;
+  }
+  #titleHover{
+    font-size: 1.1em;
+  }
+	
 }
 
 /* ===================================*/
@@ -54,7 +231,7 @@
 /* ===================================*/
 /*          CUSTOM SEARCH BAR         */
 /* ===================================*/
-@media (min-width: 768px){
+@media (min-width: 992px){
   #left {
   width: 60%;
   }
@@ -75,7 +252,7 @@
 
 #input-search {
     border-radius: 30px;
-    background-color: #ccc;
+    background-color: #b1bbc6;
     border: 0;
 }
 
@@ -91,10 +268,16 @@
     border: 0;
 }
   
-@media (max-width: 768px){
+@media (max-width: 992px){
   #search-form {
     margin-right: 0;
     margin-left: 0;
+  }
+  #search {
+    width: 100%;
+  }
+  #input-search {
+    width: 100%;
   }
 }
 
@@ -158,4 +341,19 @@ body {
 
 .container .text-muted {
   margin: 20px 0;
+  height: 20px;
+}
+
+/* ===================================*/
+/*          INDEX ROUTES              */
+/* ===================================*/
+#align {
+  margin-top: 15vh;
+}
+#align-editcomment {
+  margin-top: 10vh;
+}
+
+#align-newcomment {
+  margin-top: 4vh;
 }

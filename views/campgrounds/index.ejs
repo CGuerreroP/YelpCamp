@@ -1,25 +1,37 @@
 <% include ../partials/header %>
-    <header class="jumbotron">
+    <header class="jumbotron text-center mt-3">
         <div class="container">
-            <h1>Welcome to YelpCamp!</h1>
-            <p>View our hand-picked campgrounds from all over the world</p>
-            <p><a class="btn btn-primary btn-lg" href="/campgrounds/new">Add New Campground</a></p>
+            <h1 class="display-3">Welcome to YelpCamp!</h1>
+            <p class="lead">View our hand-picked campgrounds from all over the world</p>
+            <p><a class="btn btn-info" href="/campgrounds/new">Add New Campground</a></p>
         </div>
     </header>
     
-    <div class="row flex text-center">
+    <!--<div class="row flex text-center">-->
+    <div class="masonry">
         <% campgrounds.forEach(camp => { %>
-           <div class="col-md-3 col-sm-6">
-               <div class="thumbnail">
-                    <img src="<%= camp.image %>">
-                    <div class="caption">
-                         <h4><%= camp.name %></h4>
+            <!--<div class="col-lg-3 col-md-4 col-sm-6 mb-4">-->
+            <div class="masonry-brick">
+                <div class="overlay">
+                    <div class="hide"></div>
+                    <div class="hoverText text-center">
+                        <h6 id="titleHover"><%= camp.name %></h6>
+                        <p><%= camp.location %></p>
+                        <p>$<%= camp.price %>/night</p>
+                        <p id="link" ><a href="/campgrounds/<%= camp._id %>">More info</a></p>
                     </div>
-                    <p>
-                        <a href="/campgrounds/<%= camp._id %>" class="btn btn-primary">More Info</a>
-                    </p>
-               </div>
-           </div>
+                </div>
+               
+                <div id="cardIndex" class="card bg-light">
+                    <img id="masonry-img" class="card-img" src="<%= camp.image %>">
+                    <div id="masonry-text" class="card-img-overlay">
+                        <h6 id="title" class="card-title text-center text-white"><%= camp.name %></h6>
+                    </div>
+                </div>
+            </div>   
+           <!--</div>-->
         <% }); %>
     </div>
+    <!--</div>-->
 <% include ../partials/footer %>
+

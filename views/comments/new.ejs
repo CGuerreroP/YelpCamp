@@ -1,16 +1,19 @@
 <% include ../partials/header %>
-    <div class="row">
-        <h1 style="text-align: center;">Add New Comment to <%= campground.name %> </h1>
-        <div style="width: 30%; margin: 25px auto;">
+    <div id="align-newcomment" class="row text-center justify-content-around">
+        <div class="col-xl-4 col-md-5 col-sm-10">
+            <h1 class="display-4"><i class="fas fa-campground"></i></h1>
+            <h1 class="mb-3">New Comment to <%= campground.name %> </h1>
             <form action="/campgrounds/<%= campground._id %>/comments" method="post">
                 <div class="form-group">
-                    <input class="form-control" type="text" name="comment[text]" placeholder="text">
+                    <label for="commentedit" class="sr-only">Comment</label>
+                    <textarea class="form-control" id="commentedit" name="comment[text]" rows="8" 
+                        placeholder="Comment..." aria-label="With textarea"></textarea>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary btn-block">Submit!</button>
                 </div>
             </form>
-            <a href="/campgrounds">Go Back</a>
+            <small><a href="/campgrounds/<%= campground._id %>">Go Back</a></small>
         </div>
     </div>
 <% include ../partials/footer %>

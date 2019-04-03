@@ -1,29 +1,94 @@
 <% include ../partials/header %>
     <div class="row">
-        <h1 style="text-align: center;">Edit <%= campground.name %></h1>
-        <div style="width: 30%; margin: 25px auto;">
-            <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="campground[name]" value="<%= campground.name %>">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="campground[location]" value="<%= campground.location %>">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="number" name="campground[price]" value="<%= campground.price %>" min="0.01" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" id="image" name="image" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="campground[description]" value="<%= campground.description %>">
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-lg btn-primary btn-block">Submit!</button>
-                </div>
-            </form>
-            <a href="/campgrounds">Go Back</a>
+        <div class="col-12 mb-2 text-center">
+            <h1 class=""><i class="fas fa-campground"></i></h1>
+            <h1>Edit <%= campground.name %></h1>
         </div>
     </div>
-<% include ../partials/footer %>
+        
+    <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" enctype="multipart/form-data">
+        <div class="row justify-content-center">
+            <div class="col-xl-4 col-md-5 col-sm-10">
+                <div class="form-group">
+                    <label for="namenew">Name</label>
+                    <input class="form-control" id="namenew" type="text" name="campground[name]" value="<%= campground.name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="locationnew">Location</label>
+                    <input class="form-control" id="locationnew" type="text" name="campground[location]" value="<%= campground.location %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="customFile">Image</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/*">
+                        <label class="custom-file-label text-truncate" for="customFile">Choose file</label>
+                    </div>
+                    <small class="float-left my-1">or choose an image url from <a href="https://unsplash.com/">unsplash</a></small>
+                    <input class="form-control" id="customFileTwo" type="text" name="campground[image]" pattern="^https:\/\/images\.unsplash\.com\/.*" title="Only images from 
+                        images.unsplash.com allowed." placeholder="https://images.unsplash.com/...">
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-5 col-sm-10">
+                <div class="form-group">
+                    <label for="pricenew">Price</label>
+                    <input class="form-control" id="pricenew" type="number" name="campground[price]" value="<%= campground.price %>" min="0.01" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="descriptionnew">Description</label>
+                    <textarea class="form-control" id="descriptionnew" name="campground[description]" rows="8" aria-label="<%= campground.description %>">
+                        <%= campground.description %>
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center justify-content-around">
+            <div class="col-xl-4 col-md-5 col-sm-10">
+                <div class="form-group mb-0">
+                    <button class="btn btn-lg btn-primary btn-block">Submit!</button>
+                </div>
+                <small><a href="/campgrounds">Go Back</a></small>
+            </div>
+        </div>
+    </form>
+</div>  <!--container-->
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted">YelpCamp 2019 | <a href="/campgrounds">Home</a> | <a href="/campgrounds/new">New Campground</a></p>
+            </div>
+        </footer>
+        
+         <script type='text/javascript'>
+            const textinput = document.getElementById('input-search');
+                 textinput.addEventListener('keypress', event => {
+                    if (inputLength() > 0 && event.keyCode === 13){
+                        document.forms['search'].submit();
+                    }
+                });
+                
+            $("#customFileTwo").keyup(function(){
+                if($(this).val().length > 0) {
+                    $("#customFile").attr("disabled", true);
+                }else {
+                    $("#customFile").attr("disabled", false);
+                }
+            });
+            
+            $('.custom-file-input').on('change', function() { 
+                let fileName = $(this).val().split('\\').pop(); 
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                if(!fileName) {
+                    $("#customFileTwo").attr("disabled", false);
+                }else {
+                    $("#customFileTwo").attr("disabled", true);
+                }
+            });
+        </script>
+        
+        <!-- Bootstrap JS, JQUERY and popper -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+    </body>
+</html>
