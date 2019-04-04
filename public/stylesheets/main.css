@@ -357,3 +357,14 @@ body {
 #align-newcomment {
   margin-top: 4vh;
 }
+
+#onfocus:focus {
+  box-shadow: none;
+}
+
+.btn-outline-info.focus, .btn-outline-info:focus {
+
+}
+button:focus {
+  outline: none;
+}

@@ -34,21 +34,87 @@
                     </div>
                     <!--COMMENT SECTION START-->
                     <div class="card card-body bg-light my-3">
-                        <div class="text-right">
-                            <a class="btn btn-outline-info" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a>
+                        
+                        <!--Collapse Add a comment form START-->
+                        <div>
+                            <a id="onfocus" class="btn btn-outline-info float-right onfocus" data-toggle="collapse" href="#collapseComment" role="button" aria-expanded="false" 
+                                aria-controls="collapseComment">
+                                <i class="fas fa-plus"></i> Add New Comment
+                            </a>
+                            <h4 class="float-left text-black-50">Comments <i class="far fa-comment-alt"></i></h4>
                         </div>
+                        <div class="collapse" id="collapseComment">
+                            <div class="card card-body bg-light mt-3">
+                                <% if(!currentUser) { %>
+                                    <h5>You need to login before you can comment. <a href="/login">Click here</a> to go to the login page.</h5>
+                                <% } %>
+                                <% if(currentUser) { %>
+                                    <h5>Write your comment <i class="fas fa-pen"></i></h5>
+                                    <form id="add-comment-form" action="/campgrounds/<%= campground._id %>/comments" method="post">
+                                        <div class="form-group">
+                                            <label for="author" class="sr-only">Author</label>
+                                            <input class="form-control" id="author" type="text" value="<%= currentUser.username %>" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="commentnew" class="sr-only">Comment</label>
+                                            <textarea class="form-control" id="commentnew" name="comment[text]" rows="5" cols="70" 
+                                                placeholder="Write your comment..." aria-label="With textarea" form="add-comment-form"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-outline-info">Comment <i class="far fa-comment-alt"></i></button>
+                                        </div>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                        <!--Collapse Add a comment form END-->
+                        
                         <hr>
+                        <% if (campground.comments.length === 0) { %>
+                            <p class="font-italic text-black-50 mb-0">No comments yet.</p>
+                        <% } %>
                         <% campground.comments.forEach(comment => { %>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a class="text-decoration-none" href="/users/<%= comment.author.id %>"><strong><%= comment.author.username %></strong></a>
+                                    <a class="text-decoration-none mr-4" href="/users/<%= comment.author.id %>">
+                                        <i class="fas fa-user my-0 <%= currentUser && comment.author.id.equals(currentUser._id) ? "text-warning" : "text-muted" %>"></i> 
+                                        <strong><%= comment.author.username %></strong>
+                                    </a>
+                                    <% if(comment.isAdminEdit) { %>
+                                        <small class="text-black-50"><em> Comment edited by admin</em></small>
+                                    <% } %>
                                     <small class="float-right"><em><%= moment(comment.createdAt).fromNow() %></em></small>
                                     <p class="font-weight-light"><%= comment.text %></p>
                                     <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-                                        <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit" class="btn btn-sm btn-warning mb-3">Edit</a>
+                                    <!--Edit button used for collapsing the edit comment form-->
+                                        <a class="btn btn-sm btn-warning mb-3" data-toggle="collapse" href="#collapseEdit<%= comment._id %>" role="button" aria-expanded="false" 
+                                            aria-controls="collapseEdit">Edit</a>
+                                        <!--Delete comment form-->
                                         <form class="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="post">
                                             <button class="btn btn-sm btn-danger mb-3">Delete</button>
                                         </form>
+                                        <!--Edit comment form-->
+                                        <div class="collapse" id="collapseEdit<%= comment._id %>">
+                                            <div class="card card-body bg-light mt-3">
+                                                <h5>Edit your comment <i class="fas fa-pen"></i></h5>
+                                                <form id="edit-comment-form<%= comment._id %>" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=PUT" method="post">
+                                                    <div class="form-group">
+                                                        <label for="author" class="sr-only">Author</label>
+                                                        <input class="form-control" id="author" type="text" value="<%= comment.author.username %>" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="commentedit" class="sr-only">Edit comment</label>
+                                                        <textarea class="form-control" id="commentedit" name="comment[text]" rows="5" cols="70" 
+                                                            placeholder="Write your comment..." aria-label="<%= comment.text %>" form="edit-comment-form<%= comment._id %>">
+                                                            <%= comment.text %>
+                                                        </textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-outline-info">Edit <i class="far fa-comment-alt"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     <% } %>
                                 </div>
                             </div>
@@ -56,6 +122,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>  <!--container-->
         <footer class="footer">
             <div class="container">
@@ -85,9 +152,12 @@
               .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
               .setHTML('<h5>' + campground.name + '</h5><p>' + campground.location + '</p>'))
               .addTo(map);
-
         </script>
-        <!-- Bootstrap JS CDN -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap JS and popper -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>

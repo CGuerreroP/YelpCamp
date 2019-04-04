@@ -1,6 +1,7 @@
 const express    = require("express"),
       router     = express.Router({mergeParams: true}),
       Campground = require("../models/campground"),
+      User       = require("../models/user"),
       Comment    = require("../models/comment"),
       middleware = require("../middleware");
 
@@ -65,14 +66,18 @@ router.get("/:comment_id/edit", [middleware.checkCommentOwnership, middleware.ch
 
 //Comments Update
 router.put("/:comment_id", middleware.checkCommentOwnership, (req, res) => {
-    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, comment) => {
+    Comment.findById(req.params.comment_id, (err, comment) => {
         if(err){
             req.flash("error", "Something went wrong");
-            res.redirect("back");
-        } else {
-            req.flash("success", "Comment updated");
-            res. redirect(`/campgrounds/${req.params.id}`);
+            return res.redirect("back");
         }
+        if(req.user.isAdmin && comment.author.username !== req.user.username) {
+            comment.isAdminEdit = true;
+        }
+        comment.text = req.body.comment.text;
+        comment.save();
+        req.flash("success", "Comment updated");
+        res. redirect(`/campgrounds/${req.params.id}`);
     });
 });
 
