@@ -358,6 +358,10 @@ body {
   margin-top: 4vh;
 }
 
+/* ===================================*/
+/*          Inputs focus              */
+/* ===================================*/
+
 #onfocus:focus {
   box-shadow: none;
 }
