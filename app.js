@@ -16,6 +16,7 @@ const express               = require("express"),
 
 //requiring routes
 const indexRoutes       = require("./routes/index.js"),
+      reviewsRoutes     = require("./routes/reviews"),
       commentsRoutes    = require("./routes/comments"),
       campgroundsRoutes = require("./routes/campgrounds");
 
@@ -51,6 +52,7 @@ app.use((req, res, next) => {
 app.use(indexRoutes);
 app.use( "/campgrounds", campgroundsRoutes);
 app.use( "/campgrounds/:id/comments", commentsRoutes);
+app.use("/campgrounds/:id/reviews", reviewsRoutes);
 
 
 app.listen(process.env.PORT, process.env.IP, () => {

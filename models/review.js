@@ -12,7 +12,6 @@ const reviewSchema = new mongoose.Schema({
         }
     },
     text: String,
-    isAdminEdit: { type: Boolean, default: false },
     author: {
         id: {
             type: mongoose.Schema.Types.ObjectId,

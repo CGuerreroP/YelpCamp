@@ -57,7 +57,7 @@
 }
 
 #link {
-  margin-top: 15%;
+  /*margin-top: 10%;*/
 }
 
 .hoverText a {
@@ -345,7 +345,7 @@ body {
 }
 
 /* ===================================*/
-/*          INDEX ROUTES              */
+/*          INDEX ROUTES MARGIN        */
 /* ===================================*/
 #align {
   margin-top: 15vh;
@@ -356,6 +356,10 @@ body {
 
 #align-newcomment {
   margin-top: 4vh;
+}
+
+.align-review {
+  margin-top: 10vh;
 }
 
 /* ===================================*/
@@ -371,4 +375,17 @@ body {
 }
 button:focus {
   outline: none;
+}
+
+
+
+
+.checked {
+    color: orange;
+}
+
+@media (max-width: 576px) {
+  #rating {
+    font-size: 0.8em;
+  }
 }

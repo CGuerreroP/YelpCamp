@@ -1,5 +1,6 @@
 const Campground = require("../models/campground"),
-      Comment    = require("../models/comment");
+      Comment    = require("../models/comment"),
+      Review     = require("../models/review");
 
 
 const middlewareObj = {};
@@ -49,7 +50,49 @@ middlewareObj.checkCommentOwnership = (req, res, next) => {
             }
         });
     } else {
-        req.flash("error", "You need to be logged in");
+        req.flash("error", "You need to be logged in to do that");
+        res.redirect("back");
+    }
+};
+
+middlewareObj.checkReviewOwnership = (req, res, next) => {
+    if(req.isAuthenticated()) {
+        Review.findById(req.params.review_id, (err, review) => {
+            if(err || !review) {
+                req.flash("error", "Review not found");
+                res.redirect("back");
+            } else if(review.author.id.equals(req.user._id) || req.user.isAdmin) {
+                next();
+            } else {
+                req.flash("error", "Permission denied");
+                res.redirect("back");
+            }
+        });
+    } else {
+        req.flash("error", "You need to be logged in to do that");
+        res.redirect("back");
+    }
+};
+
+middlewareObj.checkReviewExistence = (req, res, next) => {
+    if(req.isAuthenticated()) {
+        Campground.findById(req.params.id).populate("reviews").exec((err, campground) => {
+            if(err || !campground) {
+                req.flash("error", "Campground not found");
+                res.redirect("back");
+            } else {
+                let foundUser = campground.reviews.some(review => {
+                    return review.author.id.equals(req.user._id);
+                });
+                if(foundUser) {
+                    req.flash("error", "You already wrote a review.");
+                    return res.redirect(`/campgrounds/${campground._id}`);
+                }
+                next();
+            }
+        });
+    } else {
+        req.flash("error", "You need to login first.");
         res.redirect("back");
     }
 };

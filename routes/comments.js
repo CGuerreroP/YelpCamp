@@ -88,7 +88,7 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, (req, res) => {
             req.flash("error", "Something went wrong");
             res.redirect(`/campgrounds/${req.params.id}`);
         } else {
-             req.flash("success", "Comment deleted");
+            req.flash("success", "Comment deleted");
             res.redirect(`/campgrounds/${req.params.id}`);
         }
     });

@@ -18,6 +18,17 @@
                         <h6 id="titleHover"><%= camp.name %></h6>
                         <p><%= camp.location %></p>
                         <p>$<%= camp.price %>/night</p>
+                        <small class="text-muted">
+                            <% if(camp.rating === 0) { %>
+                                <em class="text-dark">No ratings yet</em>
+                            <% } else { %>
+                                <span><i class="fas fa-star checked"></i></span>
+                                <span><i class="fas fa-star <%= camp.rating > 1.5 ? "checked" : "" %>"></i></span>
+                                <span><i class="fas fa-star <%= camp.rating > 2.5 ? "checked" : "" %>"></i></span>
+                                <span><i class="fas fa-star <%= camp.rating > 3.5 ? "checked" : "" %>"></i></span>
+                                <span><i class="fas fa-star <%= camp.rating > 4.5 ? "checked" : "" %>"></i></span>
+                            <% } %>
+                        </small>
                         <p id="link" ><a href="/campgrounds/<%= camp._id %>">More info</a></p>
                     </div>
                 </div>
