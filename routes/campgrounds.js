@@ -5,6 +5,7 @@ const express    = require("express"),
       Campground = require("../models/campground"),
       Comment    = require("../models/comment"),
       Review     = require("../models/review"),
+      User       = require("../models/user"),
       middleware = require("../middleware"),
       multer     = require("multer"),
       cloudinary = require("cloudinary");
@@ -162,6 +163,8 @@ router.delete("/:id", middleware.checkCampgroundOwnership, (req, res) => {
             if(campground.imageId){
                 await cloudinary.v2.uploader.destroy(campground.imageId);
             }
+            let reviews = await Review.find({"campground._id": campground._id}).select({ "author.id" : 1 });
+            await User.updateMany({ _id: { $in: reviews } }, { $inc : { reviewsCount: -1 } });
             await Comment.deleteMany({_id: { $in: campground.comments }});
             await Review.deleteMany({_id: { $in: campground.reviews }});
             req.flash("success", "Campground deleted");

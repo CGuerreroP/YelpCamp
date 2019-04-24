@@ -41,18 +41,19 @@ router.get("/new", middleware.isLoggedIn, middleware.checkReviewExistence, middl
 
 // Reviews Create
 router.post("/", middleware.isLoggedIn, middleware.checkReviewExistence, (req, res) => {
-    Campground.findById(req.params.id).populate("reviews").exec((err, campground) => {
+    Campground.findById(req.params.id).populate("reviews").exec(async (err, campground) => {
         if(err){
             req.flash("error", err.message);
             return res.redirect("back");
         }
-        Review.create(req.body.review, (err, review) => {
-            if(err){
-                req.flash("error", err.message);
-                return res.redirect("back");
-            }
+        try {
+            let review = await Review.create(req.body.review);
+            let user = await User.findById(req.user._id);
+            user.reviewsCount += 1;
+            user.save();
             review.author.id = req.user._id;
             review.author.username = req.user.username;
+            review.author.reviewsCount = user.reviewsCount;
             review.campground = campground;
             review.save();
             campground.reviews.push(review);
@@ -60,7 +61,10 @@ router.post("/", middleware.isLoggedIn, middleware.checkReviewExistence, (req, r
             campground.save();
             req.flash("success", "Your review has been successfully added.");
             res.redirect(`/campgrounds/${campground._id}`);
-        });
+        } catch(err){
+            req.flash("error", err.message);
+            return res.redirect("back");
+        }
     }) ;
 });
 
@@ -102,15 +106,23 @@ router.delete("/:review_id", middleware.checkReviewOwnership, (req, res) => {
             req.flash("error", err.message);
             return res.redirect("back");
         }
-        Campground.findByIdAndUpdate(req.params.id, {$pull: {reviews: req.params.review_id}}, {new: true}).populate("reviews").exec((err, campground) => {
-            if(err){
+        Campground.findByIdAndUpdate(req.params.id, {$pull: {reviews: req.params.review_id}}, {new: true}).populate("reviews").exec(async (err, campground) => {
+            if(err) {
                 req.flash("error", err.message);
                 return res.redirect("back");
             }
-            campground.rating = calculateAverage(campground.reviews);
-            campground.save();
-            req.flash("success", "Your review was deleted successfully.");
-            res.redirect(`/campgrounds/${campground._id}`);
+            try {
+                let user = await User.findById(req.user._id);
+                user.reviewsCount -= 1;
+                user.save();
+                campground.rating = calculateAverage(campground.reviews);
+                campground.save();
+                req.flash("success", "Your review was deleted successfully.");
+                res.redirect(`/campgrounds/${campground._id}`);
+            } catch(err){
+                req.flash("error", err.message);
+                return res.redirect("back");
+            }
         });
     });
 });

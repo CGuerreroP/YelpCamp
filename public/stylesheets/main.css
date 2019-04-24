@@ -194,7 +194,7 @@
 /* ===================================*/
 #map {
     width: 100%;
-    height: 400px;
+    height: 300px;
     margin-bottom: 20px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
@@ -378,7 +378,9 @@ button:focus {
 }
 
 
-
+/* ===================================*/
+/*          Ratings                   */
+/* ===================================*/
 
 .checked {
     color: orange;
@@ -388,4 +390,36 @@ button:focus {
   #rating {
     font-size: 0.8em;
   }
+}
+
+.bar {
+  width: 100%;
+  height: 100%;
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.progress {
+  background-color: #999;
+  border-radius: 5px;
+  height: 20px;
+}
+
+.stars {
+  height: 20px;
+  line-height: 20px;
+}
+/*      Ratings in camp showpage    */
+
+.reviews-text {
+  font-size: 0.8em;
+}
+
+.btn-allreviews {
+  border: none;
+  border-radius: 50px;
+}
+
+.btn-new {
+  border-radius: 50px;
 }

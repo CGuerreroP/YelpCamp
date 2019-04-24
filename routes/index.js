@@ -26,7 +26,8 @@ router.post("/register", (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        avatar: req.body.avatar
+        avatar: req.body.avatar,
+        reviewsCount: 0
     });
     //if(req.body.username === 'admin') {newUser.isAdmin = true };
     if(req.body.adminCode === process.env.ADMIN) {

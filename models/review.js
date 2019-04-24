@@ -17,7 +17,8 @@ const reviewSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
-        username: String
+        username: String,
+        reviewsCount: Number
     },
     campground: {
             type: mongoose.Schema.Types.ObjectId,

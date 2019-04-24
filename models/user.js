@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
+    reviewsCount : { type: Number, default: 0 }
 });
 
 userSchema.plugin(passportLocalMongoose);
