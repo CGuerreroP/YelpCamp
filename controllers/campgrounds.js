@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Campground = require("../models/campground"),
       Comment    = require("../models/comment"),
       Review     = require("../models/review"),
@@ -20,11 +21,11 @@ module.exports = {
 		} catch(err) {
 			console.log(err);
 		}		      
-    }
+    },
     // Campgrounds new
     campgroundNew(req, res) {
     	res.render("campgrounds/new");
-    }
+    },
     // Campgrounds create
     async campgroundCreate(req, res) {
     	try {
@@ -55,7 +56,7 @@ module.exports = {
 	        req.flash('error', err.message);
 	        return res.redirect('back');
 	    }
-    }
+    },
     // Campgrounds show
     campgroundShow(req, res) {
     	// find the campground with provided id
@@ -69,7 +70,7 @@ module.exports = {
 	           res.render("campgrounds/show", {campground: foundcampground});
 	       }
 	    });
-    }
+    },
     // Campgrounds edit
     async campgroundEdit(req, res) {
     	try {
@@ -79,7 +80,7 @@ module.exports = {
     		req.flash("error", "Campground not found");
             res.redirect("back");
     	}
-    }
+    },
     // Campgrounds update
     async campgroundUpdate(req, res) {
     	try {
@@ -114,7 +115,7 @@ module.exports = {
     		req.flash("error", err.message);
             res.redirect("/campgrounds/" + campground._id);
     	}
-    }
+    },
     // Campgrounds destroy
     async campgroundDestroy(req, res) {
     	try {
@@ -131,5 +132,5 @@ module.exports = {
             res.redirect("/campgrounds/" + campground._id);
     	}
     }
-}
+};
 
