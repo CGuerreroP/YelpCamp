@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Make site responsive on mobile/tablet -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>YelpCamp</title>
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,400,700" rel="stylesheet">
+        <!-- Font awesome-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
+            integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/stylesheets/main.css">
+        <!-- Mapbox CSS -->
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header id="header" class="container-fluid">
+        <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light fixed-top py-lg-0">
+            <div class="container">
+                <a class="navbar-brand" href="/"><i class="fas fa-campground"></i> Yelp<span>C</span>amp</a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                    
+               
+                <div class="collapse navbar-collapse" id="navbar">
+                    <ul id="left" class="navbar-nav text-sm-center">
+                        <li class="py-lg-2 nav-item borderhover <%= typeof page !== "undefined" && page === "campgrounds" ? "active" : "" %>"><a class="nav-link" href="/campgrounds">HOME</a></li>
+                        <li id="search-form-li" class="nav-item ml-lg-4 py-2">
+                            <form id="search-form" class="form-inline" action="/campgrounds" method="get">
+                                <div class="form-group" id="search">
+                                    <input type="text" id="input-search" class="form-control" name="search" placeholder="Campground location...">
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav navbar-right ml-auto">
+                        <% if(!currentUser){ %>
+                            <li class="py-lg-2 nav-item borderhover <%= typeof page !== "undefined" && page === "login" ? "active" : "" %>"><a class="nav-link" href="/login">LOGIN</a></li>
+                            <li class="py-lg-2 nav-item borderhover <%= typeof page !== "undefined" && page === "register" ? "active" : "" %>"><a class="nav-link" href="/register">SIGN UP <i class="fas fa-user-plus"></i></a></li>
+                        <% } else { %>
+                            <li class="py-lg-2 nav-item borderhover"><a class="nav-link currentUserIndex" href="/users/<%= currentUser._id %>"><%= currentUser.username %></a></li>
+                            <li class="py-lg-2 nav-item borderhover"><a class="nav-link" href="/logout">LOGOUT</a></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        

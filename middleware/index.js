@@ -104,7 +104,11 @@ middlewareObj.checkIfSearch = (req, res, next) => {
             if(err){
                 console.log(err);
             } else {
-                res.render("campgrounds/index", {campgrounds: allCampgrounds, page: "campgrounds"});
+                const matches = allCampgrounds.length;
+                const target = req.query.search;
+                const ifSearch = true;
+                res.render("campgrounds/index", {campgrounds: allCampgrounds, matches: matches, 
+                    page: "campgrounds", target: target, ifSearch: ifSearch});
             }
         });
     } else {

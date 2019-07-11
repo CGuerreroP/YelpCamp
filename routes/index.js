@@ -7,7 +7,9 @@ const express    = require("express"),
       User       = require("../models/user"),
       Campground = require("../models/campground"),
       Comment    = require("../models/comment"),
-      middleware = require("../middleware");
+      middleware = require("../middleware"),
+      multer     = require("multer"),
+      { upload, cloudinary } = require('../cloudinary');
 
 //root Route
 router.get("/", (req, res) => {
@@ -20,29 +22,30 @@ router.get("/register", middleware.checkIfSearch, (req, res) => {
 });
 
 //handle sign up logic
-router.post("/register", (req, res) => {
-    const newUser = new User({
-        username: req.body.username, 
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        avatar: req.body.avatar,
-        reviewsCount: 0
-    });
-    //if(req.body.username === 'admin') {newUser.isAdmin = true };
-    if(req.body.adminCode === process.env.ADMIN) {
-        newUser.isAdmin = true;
-    }
-    User.register(newUser, req.body.password, (err, user) =>{
-        if(err){
-            req.flash("error", err.message); //this error comes thans to passport
-            return res.redirect("/register");
+router.post("/register", upload.single('avatar'), async (req, res) => {
+    try {
+        if(req.file) {
+            let { secure_url, public_id } = await cloudinary.v2.uploader.upload(req.file.path);
+            req.body.avatar = {
+                secure_url,
+                public_id
+            };
         }
+        const newUser = new User(req.body);
+
+        //if(req.body.username === 'admin') {newUser.isAdmin = true };
+        if(req.body.adminCode === process.env.ADMIN) {
+            newUser.isAdmin = true;
+        }
+        let user = await User.register(newUser, req.body.password);    
         passport.authenticate("local")(req, res, () => {
             req.flash("success", `Welcome to YelpCamp ${user.username}`);
             res.redirect("/campgrounds");
         });
-    });
+    } catch {
+        req.flash("error", err.message); //this error comes thanks to passport
+        return res.redirect("/register");
+    }
 });
 
 //show login form

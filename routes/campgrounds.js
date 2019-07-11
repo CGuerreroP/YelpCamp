@@ -7,30 +7,7 @@ const express    = require("express"),
       Review     = require("../models/review"),
       User       = require("../models/user"),
       middleware = require("../middleware"),
-      multer     = require("multer"),
-      cloudinary = require("cloudinary");
-
-// MULTER CONFIG
-let storage = multer.diskStorage({
-  filename: (req, file, callback) => {
-    callback(null, Date.now() + file.originalname);
-  }
-});
-let imageFilter = (req, file, cb) => {
-    // accept image files only
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        return cb(new Error('Only image files are allowed!'), false);
-    }
-    cb(null, true);
-};
-let upload = multer({ storage: storage, fileFilter: imageFilter});
-
-// CLOUDINARY CONFIG
-cloudinary.config({ 
-  cloud_name: 'crisgpdev', 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+      { upload, cloudinary } = require('../cloudinary');
 
 // MAPBOX CONFIG
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
@@ -43,7 +20,10 @@ router.get("/", middleware.checkIfSearch, (req, res) => {
         if(err){
             console.log(err);
         } else {
-            res.render("campgrounds/index", {campgrounds: allCampgrounds, page: "campgrounds"});
+            const ifSearch = false;
+            const matches = allCampgrounds.length;
+            res.render("campgrounds/index", {campgrounds: allCampgrounds, 
+                matches: matches, page: "campgrounds", ifSearch: ifSearch});
         }
     });
 });

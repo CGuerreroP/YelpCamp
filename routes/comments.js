@@ -34,6 +34,7 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
                     //connect user to the comment adding username and id to the comment
                     comment.author.id = req.user._id;
                     comment.author.username = req.user.username;
+                    comment.author.avatar = req.user.avatar.secure_url;
                     comment.save();
                     //connect new comment to the campground
                     campground.comments.push(comment);

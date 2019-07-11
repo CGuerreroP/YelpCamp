@@ -1,14 +1,43 @@
-<% include ../partials/header %>
-    <header class="jumbotron text-center mt-3">
+<% include ../partials/headerindex %>
+
+    <div  class="jumbotron jumbotron-fluid text-center  mb-2">
         <div class="container">
-            <h1 class="display-3">Welcome to YelpCamp!</h1>
+            <h1 class="display-4 mt-5"><i class="fas fa-campground"></i></h1>
+            <h1 class="display-3 ">Welcome to <span id="yelpcamp">YelpCamp</span>!</h1>
             <p class="lead">View our hand-picked campgrounds from all over the world</p>
-            <p><a class="btn btn-info" href="/campgrounds/new">Add New Campground</a></p>
+            <p><a class="btn btn-info btn-new" href="/campgrounds/new">Add New Campground</a></p>
         </div>
-    </header>
+    </div>
+</header>
+<div class="container">
+    <% if(error && error.length > 0){ %>
+        <div class="alert alert-danger" role="alert">
+            <%= error %>
+        </div>
+    <% } %>
+    <% if(success && success.length > 0){ %>
+        <div class="alert alert-success" role="alert">
+            <%= success %>
+        </div>
+    <% } %>
+</div>
+<div class="container subImage">
+    <div class="pattern1"></div>
+    <div class="border1"></div>
+    <div class="layer1"></div>
+    <div class="row justify-content-center  py-5 mb-2 ">
+        <% if(!ifSearch) { %>
+            <h1 class="display-5 my-4 ontop">All our <%= matches %> campgrounds</h1> 
+        <% } else { %>
+            <h1 class="display-5 my-4 ontop"><%= matches %> campgrounds match "<%= target %>"</h1>
+        <% } %>
+    </div>
+</div>
+
     
+<div id="indexcamps" class="container shadow-lg">    
     <!--<div class="row flex text-center">-->
-    <div class="masonry">
+    <div class="masonry pb-2">
         <% campgrounds.forEach(camp => { %>
             <!--<div class="col-lg-3 col-md-4 col-sm-6 mb-4">-->
             <div class="masonry-brick">
@@ -16,8 +45,8 @@
                     <div class="hide"></div>
                     <div class="hoverText text-center">
                         <h6 id="titleHover"><%= camp.name %></h6>
-                        <p><%= camp.location %></p>
-                        <p>$<%= camp.price %>/night</p>
+                        <p><i class="fas fa-map-marker-alt"></i> <%= camp.location %></p>
+                        <p><strong>$<%= camp.price %>/night</strong></p>
                         <small class="text-muted">
                             <% if(camp.rating === 0) { %>
                                 <em class="text-dark">No ratings yet</em>
@@ -44,5 +73,37 @@
         <% }); %>
     </div>
     <!--</div>-->
-<% include ../partials/footer %>
+</div>
+<footer class="footer">
+            <div class="container">
+                <p class="text-muted">YelpCamp 2019 | <a class="agreen" href="/campgrounds">Home</a> | <a class="agreen" href="/campgrounds/new">New Campground</a></p>
+            </div>
+        </footer>
+        
+         <script type='text/javascript'>
+            const textinput = document.getElementById('input-search');
+                 textinput.addEventListener('keypress', event => {
+                    if (inputLength() > 0 && event.keyCode === 13){
+                        document.forms['search'].submit();
+                    }
+                });
+            
+            $(function() {
+                $(document).scroll(function() {
+                  var $nav = $("#mainNavbar");
+                  $nav.toggleClass("scrolled", $(this).scrollTop() > $nav.height());
+                })
+            });
+            
+            
+        </script>
+        
+        <!-- Bootstrap JS, JQUERY and popper -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+    </body>
+</html>
 

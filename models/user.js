@@ -7,7 +7,10 @@ const userSchema = new mongoose.Schema({
     password: String,
     firstName: String,
     lastName: String,
-    avatar: String,
+    avatar: {
+        secure_url: { type: String, default: '/images/default-profile.jpg' },
+        public_id: String
+    },
     email: { type: String, unique: true, required: true },
     resetPasswordToken: String,
     resetPasswordExpires: Date,

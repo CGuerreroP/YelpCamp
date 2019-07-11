@@ -20,7 +20,7 @@ const indexRoutes       = require("./routes/index.js"),
       commentsRoutes    = require("./routes/comments"),
       campgroundsRoutes = require("./routes/campgrounds");
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });   
+mongoose.connect('mongodb://localhost:27017/yelp_camp_mapbox', { useNewUrlParser: true });   //process.env.MONGODB_URL
 mongoose.set("useFindAndModify", false);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -54,7 +54,9 @@ app.use( "/campgrounds", campgroundsRoutes);
 app.use( "/campgrounds/:id/comments", commentsRoutes);
 app.use("/campgrounds/:id/reviews", reviewsRoutes);
 
-
-app.listen(process.env.PORT, process.env.IP, () => {
+app.listen(3000, () => {
     console.log("The YelpCamp Server Has Started");
 });
+// app.listen(process.env.PORT, process.env.IP, () => {
+//     console.log("The YelpCamp Server Has Started");
+// });

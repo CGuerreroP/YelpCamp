@@ -1,3 +1,18 @@
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: white;
+}
+
+#yelpcamp {
+  font-weight: 700;
+}
+
+#indexcamps {
+  background-color: white;
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 /* Thumbnail showpage styles */
 .card img {
     width: 100%;
@@ -55,6 +70,9 @@
   margin-bottom: 0;
   font-size: 0.8em;
 }
+#titleHover{
+    font-weight: 700;
+  }
 
 #link {
   /*margin-top: 10%;*/
@@ -62,6 +80,7 @@
 
 .hoverText a {
   color: red;
+  font-weight: 700;
   text-decoration: none;
 }
 
@@ -252,13 +271,19 @@
 
 #input-search {
     border-radius: 30px;
-    background-color: #b1bbc6;
+    background-color: #b1b1bc;
     border: 0;
+}
+
+#input-search:hover {
+  background-color: #7c7c84;
 }
 
 #input-search::placeholder {
   color: white;
   font-size: 0.9em;
+  padding-left: 10px;
+  font-weight: 200;
 }
 
 #input-search:focus {
@@ -422,4 +447,158 @@ button:focus {
 
 .btn-new {
   border-radius: 50px;
+}
+
+/* ===================================*/
+/*          JUMBOTRON / NAVBAR         */
+/* ===================================*/
+
+#header {
+  background: url("https://images.unsplash.com/photo-1444065707204-12decac917e8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1506&q=80");
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.jumbotron {
+  background: none;
+}
+
+.navbar.scrolled {
+  background-color: rgba(0, 0, 0, 0.4);
+	transition: 0.7s;
+} 
+
+#mainNavbar .active .nav-link {
+  color: #ea1c2c;
+  font-weight: 700;
+}
+
+#mainNavbar .active {
+  border-bottom: 1px solid #ea1c2c;
+}
+
+#mainNavbar .nav-link {
+	color: white;
+}
+
+#mainNavbar .nav-link:hover {
+	color: #ea1c2c;
+}
+
+#mainNavbar .borderhover:hover {
+  border-bottom: 1px solid #ea1c2c;
+}
+#mainNavbar .navbar-brand {
+	color: white;
+	font-weight: 700;
+}
+
+.navbar.generalNav{
+  background-color: rgba(0, 0, 0, 0.4);
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+  padding-top: 0;
+} 
+
+li.backcolor {
+  background-color: #aec2c1;
+}
+
+li.backcolorDark {
+  background-color: #465c54;
+}
+
+#mainNavbar .currentUser {
+  color: #334740;
+}
+
+#mainNavbar .currentUserIndex {
+  color: #cee2f2;
+}
+
+/* ===================================*/
+/*          PATTERN                   */
+/* ===================================*/
+.subImage{
+  position: relative;
+}
+.pattern1 {
+  background-image: url('https://images.unsplash.com/photo-1464630043472-ebd571beafc4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1055&q=80');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  position: absolute;
+  z-index: -1;
+}
+.border1 {
+  border: 6px solid white;
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  right: 2rem;
+  bottom: 2rem;
+  z-index: 1;
+}
+
+.layer1 {
+  background-color: black;
+  opacity: 0.5;
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  right: 2rem;
+  bottom: 2rem;
+  z-index: -1;
+}
+
+.ontop {
+  z-index: 3;
+  position: relative;
+  color: black;
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* ===================================*/
+/*         ALERTS                     */
+/* ===================================*/
+
+.alert-danger {
+  background-color: white;
+  border-bottom: 1px solid #721c24;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+
+.alert-success {
+  background-color: white;
+  border-bottom: 1px solid #155724;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+
+.alert {
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.agreen {
+  color: #7dd4bb;
+}
+
+.agreen:hover {
+  color: #458f79;
+}
+#profile-image {
+  width: 50px;
+  border-radius: 50%;
 }
